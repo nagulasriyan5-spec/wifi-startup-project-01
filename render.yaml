@@ -1,0 +1,131 @@
+services:
+  - type: keyvalue
+    name: wifi-startup-project-01-cache
+    region: singapore
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
+
+  - type: web
+    name: wifi-startup-project-01
+    runtime: node
+    region: singapore
+    plan: free
+    branch: main
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "24"
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: "10000"
+      - key: LEGAL_OWNER_NAME
+        value: SRIYAN
+      - key: DEV_AUTH_ENABLED
+        value: "false"
+      - key: DATABASE_MODE
+        value: default
+      - key: DB_CONNECTION_LIMIT
+        value: "10"
+      - key: DB_MAX_IDLE
+        value: "5"
+      - key: DB_IDLE_TIMEOUT_MS
+        value: "60000"
+      - key: DB_QUEUE_LIMIT
+        value: "200"
+      - key: DB_CONNECT_TIMEOUT_MS
+        value: "10000"
+      - key: BODY_LIMIT_BYTES
+        value: "10485760"
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "60000"
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: "600"
+      - key: REALTIME_MAX_CLIENTS
+        value: "500"
+      - key: REALTIME_KEEPALIVE_MS
+        value: "25000"
+      - key: LEDGER_LOCK_TIMEOUT_SECONDS
+        value: "5"
+      - key: REDIS_REQUIRED
+        value: "true"
+      - key: REDIS_HEALTH_TIMEOUT_MS
+        value: "2000"
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: wifi-startup-project-01-cache
+          property: connectionString
+      - key: ROUTER_REQUIRE_REQUEST_SIGNATURE
+        value: "true"
+      - key: ROUTER_SIGNATURE_TOLERANCE_SECONDS
+        value: "300"
+      - key: PAYMENT_CONNECTIVITY_MAX_SECONDS
+        value: "300"
+      - key: PAYMENT_CONNECTIVITY_BANDWIDTH_MBPS
+        value: "2"
+      - key: PAYMENT_CONNECTIVITY_ALLOWED_HOSTS
+        value: ""
+      - key: PAYMENT_GATEWAY_PROVIDER
+        value: razorpay
+      - key: CASHFREE_API_VERSION
+        value: "2025-01-01"
+      - key: CASHFREE_ENVIRONMENT
+        value: production
+      - key: PHONEPE_CLIENT_VERSION
+        value: "1"
+      - key: PHONEPE_ENVIRONMENT
+        value: production
+      - key: VITE_API_URL
+        value: ""
+      - key: VITE_APP_ID
+        value: sriyan-production
+      - key: APP_ID
+        value: sriyan-production
+      - key: APP_SECRET
+        generateValue: true
+      - key: CHAIN_SIGNING_SECRET
+        generateValue: true
+      - key: ROUTER_INTEGRATION_SECRET
+        generateValue: true
+      - key: PUBLIC_APP_URL
+        fromService:
+          type: web
+          name: wifi-startup-project-01
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: FRONTEND_ORIGIN
+        fromService:
+          type: web
+          name: wifi-startup-project-01
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: SRIYAN_AUTH_URL
+        fromService:
+          type: web
+          name: wifi-startup-project-01
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: SRIYAN_OPEN_URL
+        fromService:
+          type: web
+          name: wifi-startup-project-01
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: VITE_SRIYAN_AUTH_URL
+        fromService:
+          type: web
+          name: wifi-startup-project-01
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: DATABASE_URL
+        sync: false
+      - key: OWNER_UNION_ID
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false

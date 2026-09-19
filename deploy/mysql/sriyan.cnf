@@ -1,0 +1,15 @@
+[mysqld]
+max_connections=1000
+skip_name_resolve=1
+table_open_cache=4000
+thread_cache_size=128
+tmp_table_size=256M
+max_heap_table_size=256M
+
+innodb_dedicated_server=ON
+innodb_flush_log_at_trx_commit=1
+innodb_flush_method=O_DIRECT
+
+slow_query_log=ON
+long_query_time=0.5
+log_queries_not_using_indexes=OFF

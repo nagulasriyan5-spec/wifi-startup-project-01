@@ -1,0 +1,37 @@
+{
+  "name": "Sriyan WiFi",
+  "short_name": "Sriyan",
+  "description": "Realtime UPI payment, token WiFi, hotspot, router, and merchant app.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#e0e5ec",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Merchant Dashboard",
+      "short_name": "Dashboard",
+      "url": "/dashboard"
+    },
+    {
+      "name": "Hotspot Gateway",
+      "short_name": "Hotspot",
+      "url": "/hotspot"
+    },
+    {
+      "name": "Customer Connect",
+      "short_name": "Connect",
+      "url": "/connect"
+    }
+  ]
+}

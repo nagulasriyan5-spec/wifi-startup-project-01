@@ -1,0 +1,9 @@
+node_modules
+dist
+.git
+*.swp
+*.log
+.env
+.env.*
+local-mysql-data
+coverage
