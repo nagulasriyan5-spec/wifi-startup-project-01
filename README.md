@@ -170,6 +170,8 @@ Before the first Render Blueprint deploy, fill the `sync: false` environment var
 
 The app requires MySQL at startup. Render does not provision MySQL from this Blueprint, so create the database first, run the Drizzle schema against it, then deploy. The web service build command is `npm ci && npm run build`, the start command is `npm run start`, and the service listens on Render's `PORT` at `0.0.0.0`.
 
+If you deploy the `Dockerfile` manually instead of using the Blueprint, set at least `DATABASE_URL` and `APP_SECRET` in Render. `CHAIN_SIGNING_SECRET` and `ROUTER_INTEGRATION_SECRET` can be set separately for stronger operational isolation, but the app can boot by falling back to `APP_SECRET`.
+
 ```bash
 copy .env.production.example .env.production
 npm run deploy:prod

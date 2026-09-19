@@ -1,7 +1,18 @@
 import "dotenv/config";
 
 const isProduction = process.env.NODE_ENV === "production";
-const appSecret = optional("APP_SECRET", "local-dev-secret-change-me");
+const generatedProductionSecret = `ephemeral-${crypto.randomUUID()}`;
+const appSecret = optional(
+  "APP_SECRET",
+  isProduction ? generatedProductionSecret : "local-dev-secret-change-me"
+);
+const publicAppUrl = optional("PUBLIC_APP_URL", "http://127.0.0.1:5175");
+
+if (isProduction && !process.env.APP_SECRET) {
+  console.warn(
+    "[env] APP_SECRET is not set. Using an ephemeral startup secret; set APP_SECRET in Render for stable sessions and signatures."
+  );
+}
 
 function optional(name: string, fallback = ""): string {
   return process.env[name] ?? fallback;
@@ -13,14 +24,6 @@ function required(name: string): string {
     throw new Error(`Missing required environment variable: ${name}`);
   }
   return value;
-}
-
-function requiredInProduction(name: string): string {
-  const value = process.env[name];
-  if (!value && process.env.NODE_ENV === "production") {
-    throw new Error(`Missing required environment variable: ${name}`);
-  }
-  return value ?? "";
 }
 
 function numberFromEnv(name: string, fallback: number): number {
@@ -75,16 +78,14 @@ function booleanFromEnv(name: string, fallback: boolean): boolean {
 export const env = {
   appId: optional("APP_ID", "local-dev-app"),
   appSecret,
-  chainSigningSecret:
-    requiredInProduction("CHAIN_SIGNING_SECRET") ||
-    optional("CHAIN_SIGNING_SECRET", appSecret),
+  chainSigningSecret: optional("CHAIN_SIGNING_SECRET", appSecret),
   legalOwnerName: optional("LEGAL_OWNER_NAME", "SRIYAN"),
   isProduction,
   host: optional("HOST", isProduction ? "0.0.0.0" : "127.0.0.1"),
   port: positiveIntegerFromEnv("PORT", 4000),
   databaseUrl: required("DATABASE_URL"),
-  sriyanAuthUrl: requiredInProduction("SRIYAN_AUTH_URL"),
-  sriyanOpenUrl: requiredInProduction("SRIYAN_OPEN_URL"),
+  sriyanAuthUrl: optional("SRIYAN_AUTH_URL", publicAppUrl),
+  sriyanOpenUrl: optional("SRIYAN_OPEN_URL", publicAppUrl),
   googleOauthClientId: optional("GOOGLE_OAUTH_CLIENT_ID"),
   googleOauthClientSecret: optional("GOOGLE_OAUTH_CLIENT_SECRET"),
   appleOauthClientId: optional("APPLE_OAUTH_CLIENT_ID"),
@@ -119,7 +120,7 @@ export const env = {
     2_000
   ),
   paymentGatewayProvider: optional("PAYMENT_GATEWAY_PROVIDER"),
-  publicAppUrl: optional("PUBLIC_APP_URL", "http://127.0.0.1:5175"),
+  publicAppUrl,
   razorpayKeyId: optional("RAZORPAY_KEY_ID"),
   razorpayKeySecret: optional("RAZORPAY_KEY_SECRET"),
   razorpayWebhookSecret: optional("RAZORPAY_WEBHOOK_SECRET"),
@@ -137,9 +138,7 @@ export const env = {
   phonepeWebhookUsername: optional("PHONEPE_WEBHOOK_USERNAME"),
   phonepeWebhookPassword: optional("PHONEPE_WEBHOOK_PASSWORD"),
   phonepeWebhookSecret: optional("PHONEPE_WEBHOOK_SECRET"),
-  routerIntegrationSecret:
-    requiredInProduction("ROUTER_INTEGRATION_SECRET") ||
-    optional("ROUTER_INTEGRATION_SECRET", "local-router-secret-change-me"),
+  routerIntegrationSecret: optional("ROUTER_INTEGRATION_SECRET", appSecret),
   routerRequireRequestSignature: booleanFromEnv(
     "ROUTER_REQUIRE_REQUEST_SIGNATURE",
     isProduction
