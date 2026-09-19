@@ -153,6 +153,23 @@ npm run build
 
 Use [DEPLOYMENT.md](./DEPLOYMENT.md) for the ready-to-deploy Docker/Nginx/MySQL production stack, scaling notes for 10,000 to 50,000 users, and tamper-proof ledger operations.
 
+## Render Deployment
+
+This repository includes `render.yaml` for Render Blueprint deployment. It creates:
+
+- `wifi-startup-project-01` Node web service
+- `wifi-startup-project-01-cache` Render Key Value instance for Redis-compatible readiness checks
+
+Before the first Render Blueprint deploy, fill the `sync: false` environment variables that Render prompts for:
+
+- `DATABASE_URL` - a MySQL connection string from an external MySQL-compatible database
+- `OWNER_UNION_ID`
+- `RAZORPAY_KEY_ID`
+- `RAZORPAY_KEY_SECRET`
+- `RAZORPAY_WEBHOOK_SECRET`
+
+The app requires MySQL at startup. Render does not provision MySQL from this Blueprint, so create the database first, run the Drizzle schema against it, then deploy. The web service build command is `npm ci && npm run build`, the start command is `npm run start`, and the service listens on Render's `PORT` at `0.0.0.0`.
+
 ```bash
 copy .env.production.example .env.production
 npm run deploy:prod
